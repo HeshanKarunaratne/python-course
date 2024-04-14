@@ -1,11 +1,15 @@
-def fizz_Buzz(input):
-    if (input % 5 == 0 and input % 3 == 0):
-        return "FizzBuzz"
-    if (input % 3 == 0):
-        return "Fizz"
-    if (input % 5 == 0):
-        return "Buzz"
-    return input
+sentence = "This is a common interview question"
+char_frequency = {}
+for char in sentence:
+    if char == ' ':
+        continue
+    if char in char_frequency:
+        char_frequency[char] += 1
+    else:
+        char_frequency[char] = 1
 
-
-print(fizz_Buzz(7))
+char_frequency_sorted = sorted(
+    char_frequency.items(),
+    key=lambda kv: kv[1],
+    reverse=True)
+print(char_frequency_sorted[0][0])
