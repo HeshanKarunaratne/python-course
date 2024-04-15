@@ -1,15 +1,6 @@
-sentence = "This is a common interview question"
-char_frequency = {}
-for char in sentence:
-    if char == ' ':
-        continue
-    if char in char_frequency:
-        char_frequency[char] += 1
-    else:
-        char_frequency[char] = 1
+from collections import namedtuple
 
-char_frequency_sorted = sorted(
-    char_frequency.items(),
-    key=lambda kv: kv[1],
-    reverse=True)
-print(char_frequency_sorted[0][0])
+Point = namedtuple("Point", ["x", "y"])
+p1 = Point(x=1, y=2)
+p2 = Point(x=1, y=2)
+print(p1 == p2)

@@ -478,3 +478,461 @@ char_frequency_sorted = sorted(
     reverse=True)
 print(char_frequency_sorted[0][0])
 ~~~
+
+#### Exceptions
+~~~py
+try:
+    file = open("app.py")
+    age = int(input("Age: "))
+    xfactor = 10/age
+except (ValueError, ZeroDivisionError):
+    print("You didnt enter a valid age.")
+else:
+    print("No exceptions were thrown")
+finally:
+    file.close()
+~~~
+
+#### With statement
+~~~py
+try:
+    with open("app.py") as file:
+        print("File opened")
+    age = int(input("Age: "))
+    xfactor = 10/age
+except (ValueError, ZeroDivisionError):
+    print("You didnt enter a valid age.")
+else:
+    print("No exceptions were thrown")
+finally:
+    file.close()
+~~~
+
+#### Raising Exceptions
+~~~py
+def calculate_xfactor(age):
+    if age <= 0:
+        raise ValueError("Age cannot be 0 or less")
+    return 10 / age
+
+
+try:
+    calculate_xfactor(-1)
+except ValueError as ex:
+    print(ex)
+~~~
+
+#### Class
+~~~py
+class Point:
+    def draw(self):
+        print("draw")
+
+
+point = Point()
+print(type(point))
+print(isinstance(point, Point))
+~~~
+
+#### Constructors
+~~~py
+class Point:
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def draw(self):
+        print(f"Point ({self.x}, {self.y})")
+
+
+point = Point(10, 20)
+point.draw()
+~~~
+
+#### Class and instance attributes
+~~~py
+class Point:
+
+    default_color = "red"
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def draw(self):
+        print(f"Point ({self.x}, {self.y})")
+
+
+point = Point(10, 20)
+point.default_color = "blue"
+point.draw()
+print(point.default_color)
+
+another = Point(1, 2)
+print(another.default_color)
+~~~
+
+#### Class and instance methods
+~~~py
+class Point:
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    @classmethod
+    def zero(cls):
+        return cls(0, 0)
+
+    def draw(self):
+        print(f"Point ({self.x}, {self.y})")
+
+
+point = Point.zero()
+point.draw()
+~~~
+
+#### Magic methods: __str__
+~~~py
+class Point:
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __str__(self):
+        return f"({self.x}, {self.y})"
+
+point = Point(1, 2)
+print(point)
+~~~
+
+#### __eq__
+~~~py
+class Point:
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
+    def __gt__(self, other):
+        return self.x > other.x and self.y > other.y
+
+
+point = Point(3, 4)
+other = Point(2, 3)
+print(point < other)
+~~~
+
+#### __add__
+~~~py
+class Point:
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __add__(self, other):
+        return Point(self.x + other.x,  self.y + other.y)
+
+
+point = Point(3, 4)
+other = Point(2, 3)
+print(point + other)
+~~~
+
+### __getitem__, __setitem__, __len__, __iter__
+~~~py
+class TagCloud:
+    def __init__(self):
+        self.tags = {}
+
+    def add(self, tag):
+        tag = tag.lower()
+        self.tags[tag] = self.tags.get(tag, 0) + 1
+
+    def __getitem__(self, tag):
+        return self.tags.get(tag.lower(), 0)
+
+    def __setitem__(self, tag, count):
+        self.tags[tag.lower()] = count
+
+    def __len__(self):
+        return len(self.tags)
+
+    def __iter__(self):
+        return iter(self.tags)
+
+
+cloud = TagCloud()
+cloud.add("Python")
+cloud.add("python")
+cloud.add("python")
+cloud["vb"] = 10
+print(cloud.tags)
+print(len(cloud))
+~~~
+
+#### Private members
+~~~py
+class TagCloud:
+    def __init__(self):
+        self.__tags = {}
+
+    def add(self, tag):
+        tag = tag.lower()
+        self.__tags[tag] = self.__tags.get(tag, 0) + 1
+
+cloud = TagCloud()
+# print(cloud.__tags) This statement will not work now
+~~~
+
+#### Properties
+~~~py
+class Product:
+    def __init__(self, price):
+        self.price = price
+
+    @property
+    def price(self):
+        return self.__price
+
+    @price.setter
+    def price(self, value):
+        if value < 0:
+            raise ValueError("Price Cannot be negative")
+        self.__price = value
+
+
+product = Product(-10)
+~~~
+
+#### Inheritance
+~~~py
+class Animal:
+    def __init__(self):
+        self.age = 1
+
+    def eat(self):
+        print("eat")
+
+
+# Animal: Parent, Base
+# Mammal: Child, Sub
+class Mammal(Animal):
+    def walk(self):
+        print("walk")
+
+
+class Fish(Animal):
+    def swim(self):
+        print("swim")
+
+
+m = Mammal()
+m.eat()
+m.walk()
+print(m.age)
+~~~
+
+#### Overriding: super() does not need to be the first statement in python
+~~~py
+class Animal:
+    def __init__(self):
+        self.age = 1
+        print("Animal Constructor")
+
+    def eat(self):
+        print("eat")
+
+class Mammal(Animal):
+    def __init__(self):
+        super().__init__()
+        print("Mammal Constructor")
+        self.weight = 2
+
+    def walk(self):
+        print("walk")
+
+
+class Fish(Animal):
+    def swim(self):
+        print("swim")
+
+
+m = Mammal()
+print(m.age)
+print(m.weight)
+~~~
+
+#### MultiLevel Inheritance
+~~~py
+class Animal:
+    def eat(self):
+        print("eat")
+
+class Bird(Animal):
+    def fly(self):
+        print("fly")
+~~~
+
+#### Multiple Inheritance
+~~~py
+class Flyer:
+    def fly(self):
+        pass
+
+class Swimmer:
+    def swim(self):
+        pass
+
+class FlyingFish(Flyer, Swimmer):
+    pass
+~~~
+
+- Example
+~~~py
+class InvalidOperationError(Exception):
+    pass
+
+class Stream:
+    def __init__(self):
+        self.opened = False
+
+    def open(self):
+        if self.opened:
+            raise InvalidOperationError("Stream is already opened")
+        self.opened = True
+
+    def close(self):
+        if not self.opened:
+            raise InvalidOperationError("Stream is already closed")
+        self.opened = False
+
+class FileStream(Stream):
+    def read(self):
+        print("Reading data from a file")
+
+class NetworkStream(Stream):
+    def read(self):
+        print("Reading data from a network")
+
+~~~
+
+#### Abstract classes
+~~~py
+from abc import ABC, abstractmethod
+
+class InvalidOperationError(Exception):
+    pass
+
+class Stream(ABC):
+    def __init__(self):
+        self.opened = False
+
+    def open(self):
+        if self.opened:
+            raise InvalidOperationError("Stream is already opened")
+        self.opened = True
+
+    def close(self):
+        if not self.opened:
+            raise InvalidOperationError("Stream is already closed")
+        self.opened = False
+
+    @abstractmethod
+    def read(self):
+        pass
+
+class FileStream(Stream):
+    def read(self):
+        print("Reading data from a file")
+
+class NetworkStream(Stream):
+    def read(self):
+        print("Reading data from a network")
+
+fileStream = FileStream()
+print(fileStream.opened)
+fileStream.open()
+print(fileStream.opened)
+fileStream.close()
+print(fileStream.opened)
+~~~
+
+#### Polymorphism
+~~~py
+from abc import ABC, abstractmethod
+
+class UIControl(ABC):
+    @abstractmethod
+    def draw(self):
+        pass
+
+class TextBox(UIControl):
+    def draw(self):
+        print("TextBox")
+
+class DropDownList(UIControl):
+    def draw(self):
+        print("DropDownList")
+
+def draw(controls):
+    for control in controls:
+        control.draw()
+
+text = TextBox()
+ddl = DropDownList()
+draw([text, ddl])
+~~~
+
+#### Duck Typing
+~~~py
+class TextBox:
+    def draw(self):
+        print("TextBox")
+
+class DropDownList:
+    def draw(self):
+        print("DropDownList")
+
+def draw(controls):
+    for control in controls:
+        control.draw()
+
+text = TextBox()
+ddl = DropDownList()
+draw([text, ddl])
+~~~
+
+#### Built In types
+~~~py
+class Text(str):
+    def duplicate(self):
+        return self+self
+
+class TrackableList(list):
+    def append(self, object):
+        print("append called:", object)
+        super().append(object)
+
+text = Text("hello")
+print(text.duplicate())
+
+tl = TrackableList()
+tl.append("l1")
+~~~
+
+#### Data Classes: These values are immutable
+~~~py
+from collections import namedtuple
+
+Point = namedtuple("Point", ["x", "y"])
+p1 = Point(x=1, y=2)
+p2 = Point(x=1, y=2)
+print(p1 == p2)
+~~~
