@@ -1,6 +1,6 @@
-from collections import namedtuple
+import numpy as np
 
-Point = namedtuple("Point", ["x", "y"])
-p1 = Point(x=1, y=2)
-p2 = Point(x=1, y=2)
-print(p1 == p2)
+array = np.array([[1, 2, 3], [4, 5, 6]])
+array = np.zeros((3, 4))
+array = np.ones((3, 4), dtype=int)
+array = np.full((3, 4), 5, dtype=int)

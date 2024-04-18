@@ -936,3 +936,491 @@ p1 = Point(x=1, y=2)
 p2 = Point(x=1, y=2)
 print(p1 == p2)
 ~~~
+
+#### Creating modules
+~~~py
+from sales import calc_shipping, calc_tax
+import sales
+
+calc_tax()
+sales.calc_tax()
+~~~
+
+#### Executing module as a script
+~~~py
+def calc_tax():
+    pass
+
+def calc_shipping():
+    pass
+
+if __name__ == "__main__":
+    print("Sales started")
+    calc_tax()
+~~~
+
+### Python Libraries
+#### Paths
+~~~py
+from pathlib import Path
+
+path = Path("ecommerce//__init__.py")
+path.exists()
+path.is_file()
+path.is_dir()
+print(path.name)
+print(path.stem)
+print(path.suffix)
+print(path.parent)
+print(path.absolute())
+print(path.with_name("hello.txt"))
+~~~
+
+#### Directories
+~~~py
+from pathlib import Path
+
+path = Path("ecommerce")
+paths = [p for p in path.iterdir() if p.is_dir()]
+print(paths)
+py_files = [p for p in path.rglob("*.py")]
+print(py_files)
+~~~
+
+#### Files
+~~~py
+from pathlib import Path
+from time import ctime
+import shutil
+
+path = Path("ecommerce/__init__.py")
+path.exists()
+print(ctime(path.stat().st_ctime))
+print(path.read_text())
+path.write_text(f"print(\"Ecommerce updated!!!\")")
+
+source = Path("ecommerce/__init__.py")
+target = Path() / "__init__.py"
+
+# target.write_text(source.read_text())
+shutil.copy(source, target)
+~~~
+
+#### Zip
+~~~py
+from pathlib import Path
+from zipfile import ZipFile
+
+with ZipFile("files.zip", "w") as zip:
+    for path in Path("ecommerce").rglob("*.*"):
+        zip.write(path)
+
+with ZipFile("files.zip") as zip:
+    print(zip.namelist())
+    info = zip.getinfo("ecommerce/__init__.py")
+    print(info)
+    zip.extractall("extract")
+~~~
+
+#### CSV
+~~~py
+import csv
+
+with open("data.csv", "w") as file:
+    writer = csv.writer(file)
+    writer.writerow(["transaction_id", "product_id", "price"])
+    writer.writerow([1000, 1, 5])
+    writer.writerow([1001, 2, 7])
+    writer.writerow([1002, 3, 10])
+
+with open("data.csv") as file:
+    reader = csv.reader(file)
+    for row in reader:
+        print(row)
+~~~
+
+#### Json
+~~~py
+import json
+from pathlib import Path
+
+movies = [
+    {"id": 1, "title": "Terminator", "year": 1989},
+    {"id": 2, "title": "Cop", "year": 1993}
+]
+
+data = json.dumps(movies)
+Path("movies.json").write_text(data)
+
+data = Path("movies.json").read_text()
+movies = json.loads(data)
+print(movies[0]["title"])
+~~~
+
+#### Sqlite3
+~~~py
+import sqlite3
+import json
+from pathlib import Path
+
+movies = json.loads(Path("movies.json").read_text())
+print(movies)
+
+with sqlite3.connect("db.sqlite3") as conn:
+    command = "INSERT INTO Movies VALUES(?, ?, ?)"
+    for movie in movies:
+        conn.execute(command, tuple(movie.values()))
+    conn.commit()
+
+with sqlite3.connect("db.sqlite3") as conn:
+    command = "SELECT * FROM Movies"
+    cursor = conn.execute(command)
+    for row in cursor:
+        print(row)
+    print(cursor.fetchall())
+~~~
+
+#### Timestamps
+~~~py
+import time
+
+def send_email():
+    for i in range(10000):
+        pass
+
+start = time.time()
+send_email()
+end = time.time()
+duration = end - start
+print(duration)
+~~~
+
+#### Datetimes
+~~~py
+from datetime import datetime
+import time
+
+dt = datetime(2018, 1, 1)
+print(dt.now())
+dt = datetime.strptime("2018/01/01", "%Y/%m/%d")
+dt = datetime.fromtimestamp(time.time())
+print(f"{dt.year}/{dt.month}/{dt.day}")
+~~~
+
+#### TimeDeltas
+~~~py
+from datetime import datetime, timedelta
+
+dt1 = datetime(2018, 1, 1) + timedelta(days=1, seconds=100)
+print(dt1)
+dt2 = datetime.now()
+
+duration = dt2 - dt1
+print(duration)
+print("days:", duration.days)
+print("seconds:", duration.seconds)
+print("total_seconds:", duration.total_seconds())
+~~~
+
+#### Random
+~~~py
+import random
+import string
+print(random.random())
+print(random.randint(1, 10))
+print(random.choice([1, 2, 3, 4, 5]))
+print("".join(random.choices(string.ascii_letters + string.digits, k=4)))
+~~~
+
+#### Opening WebBrowser
+~~~py
+import webbrowser
+webbrowser.open("https://google.com")
+~~~
+
+#### Send Emails
+~~~py
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+import smtplib
+from pathlib import Path
+
+message = MIMEMultipart()
+message["from"] = "Heshan Karunaratne"
+message["to"] = "to_mail"
+message["subject"] = "Test Message"
+message.attach(MIMEText("Sample Body"))
+message.attach(MIMEImage(Path("img.png").read_bytes()))
+
+with smtplib.SMTP(host="smtp.gmail.com", port=587) as smtp:
+    smtp.ehlo()
+    smtp.starttls()
+    smtp.login("username", "password")
+    smtp.send_message(message)
+    print("sent..")
+~~~
+
+#### HTML Template
+~~~py
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+import smtplib
+from pathlib import Path
+from string import Template
+
+template = Template(Path("template.html").read_text())
+message = MIMEMultipart()
+message["from"] = "Heshan Karunaratne"
+message["to"] = "to_mail"
+message["subject"] = "Test Message"
+message.attach(MIMEText(template.substitute({"name": "John"}), "html"))
+message.attach(MIMEImage(Path("img.png").read_bytes()))
+
+with smtplib.SMTP(host="smtp.gmail.com", port=587) as smtp:
+    smtp.ehlo()
+    smtp.starttls()
+    smtp.login("username", "password")
+    smtp.send_message(message)
+    print("sent..")
+~~~
+
+#### Command line Arguments
+~~~py
+import sys
+
+if len(sys.argv) == 1:
+    print("USAGE: python3 app.py <password>")
+else:
+    password = sys.argv[1]
+    print("password:", password)
+~~~
+
+#### Executing subprocessors
+~~~py
+import subprocess
+
+completed = subprocess.run(["ls", "-l"], capture_output=True, text=True)
+print("args", completed.args)
+print("returncode", completed.returncode)
+print("stderr", completed.stderr)
+print("stdout", completed.stdout)
+~~~
+
+### Packages
+#### Pip
+~~~text
+pip3 install requests
+pip3 list
+pip3 install requests==2.9.0
+~~~
+
+~~~py
+import requests
+
+response = requests.get("https://google.com")
+print(response)
+~~~
+
+#### Virtual Env
+~~~text
+python - venv env
+env\bin\activate.bat
+deactivate
+~~~
+
+#### pipenv
+~~~text
+pip3 install pipenv
+pipenv install requests
+pipenv --venv
+
+<!-- Activate virtual machine -->
+pipenv shell
+exit
+pipenv graph
+~~~
+
+#### API
+~~~py
+import requests
+
+url = "https://jsonplaceholder.typicode.com/posts"
+api_key = "API_KEY"
+headers = {
+    "Authorization": "Bearer " + api_key
+}
+params = {
+    "location": "NYC"
+}
+response = requests.get(url, headers=headers, params=params)
+users = response.json()
+users_gt_id_50 = [user["title"] for user in users if user["id"] > 50]
+print(users_gt_id_50)
+~~~
+
+#### Send Text messages using twilio
+~~~py
+from twilio.rest import Client
+
+client = Client("ACCOUNT_SID", "AUTH_TOKEN")
+call = client.messages.create(
+    to="...",
+    from_="...",
+    body="First message"
+)
+~~~
+
+#### Web Scraping
+~~~py
+import requests
+from bs4 import BeautifulSoup
+
+response = requests.get("https://stackoverflow.com/questions")
+soup = BeautifulSoup(response.text, "html.parser")
+
+questions = soup.select(".question-summary")
+for question in questions:
+    print(question.select_one(".question-hyperlink").getText())
+    print(question.select_one(".vote-count-post").getText())
+~~~
+
+#### Browser Automation
+~~~py
+from selenium import webdriver
+
+browser = webdriver.Chrome()
+browser.get("https://github.com")
+
+signin_link = browser.find_element_by_link_text("Sign in")
+signin_link.click()
+
+username_box = browser.find_element_by_id("login_field")
+username_box.send_keys("username")
+
+password = browser.find_element_by_id("password")
+password.send_keys("password")
+password.submit()
+
+assert "username" in browser.page_source
+profile_link = browser.find_element_by_class_name("user-profile-link")
+link_label = profile_link.get_attribute("innerHTML")
+assert "username" in link_label
+
+browser.quit()
+~~~
+
+#### Working with PDFs
+~~~py
+import PyPDF2
+
+with open("test.pdf", "rb") as file:
+    reader = PyPDF2.PdfReader(file)
+    print(reader.pages)
+    page = reader.pages(0)
+    page.rotateClockwise(90)
+    writer = PyPDF2.PdfFileWriter()
+    writer.addPage(page)
+    with open("rotated.pdf", "wb") as output:
+        writer.write(output)
+~~~
+
+#### Excels
+~~~py
+import openpyxl
+
+wb = openpyxl.load_workbook("transactions.xlsx")
+print(wb.sheetnames)
+
+sheet = wb["Sheet1"]
+
+for row in range(1, sheet.max_row+1):
+    for column in range(1, sheet.max_column+1):
+        cell = sheet.cell(row, column)
+        print(cell.value)
+
+cell = sheet["a1"]
+column = sheet["a"]
+cells = sheet["a:c"]
+sheet["a1:c3"]
+sheet[1:3]
+
+sheet.append([1, 2, 3])
+wb.save("transactions2.xlsx")
+~~~
+
+#### numpy
+~~~py
+import numpy as np
+
+array = np.array([[1, 2, 3], [4, 5, 6]])
+array = np.zeros((3, 4))
+array = np.ones((3, 4), dtype=int)
+array = np.full((3, 4), 5, dtype=int)
+~~~
+
+#### Machine Learning
+- Download anaconda and start jupyter notebook server
+- Create a new notebook
+- Copy a dataset where you created the notebook
+- X: Input data(remove output column)
+- y: Output data
+
+~~~py
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
+
+music_data = pd.read_csv('music.csv')
+X = music_data.drop(columns=['genre'])
+y = music_data['genre']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+model = DecisionTreeClassifier()
+model.fit(X_train, y_train)
+
+predictions = model.predict(X_test)
+score= accuracy_score(y_test, predictions)
+~~~
+
+#### Dumping model to external file
+~~~py
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.externals import joblib
+
+music_data = pd.read_csv('music.csv')
+X = music_data.drop(columns=['genre'])
+y = music_data['genre']
+model = DecisionTreeClassifier()
+model.fit(X_train, y_train)
+
+joblib.dump(model, 'music-recommender.joblib')
+~~~
+
+#### Loading model from external file
+~~~py
+import pandas as pd
+from sklearn.externals import joblib
+
+model = joblib.load('music-recommender.joblib')
+predictions = model.predict([21,1])
+~~~
+
+#### Decision Tree
+~~~py
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+from sklearn import tree
+
+music_data = pd.read_csv('music.csv')
+X = music_data.drop(columns=['genre'])
+y = music_data['genre']
+
+model = DecisionTreeClassifier()
+model.fit(X, y)
+
+tree.export_graphviz(model, out_file='music-recommender.dot', feature_names=['age','gender'], class_names=sorted(y.unique()), label='all', rounded=True, filled=True)
+~~~
