@@ -1424,3 +1424,18 @@ model.fit(X, y)
 
 tree.export_graphviz(model, out_file='music-recommender.dot', feature_names=['age','gender'], class_names=sorted(y.unique()), label='all', rounded=True, filled=True)
 ~~~
+
+#### Django
+- pip install pipenv
+- pipenv install django
+- pipenv shell
+- django-admin startproject PROJECT_NAME .
+- python manage.py runserver
+
+- python manage.py startapp movies
+- python manage.py makemigrations
+- python manage.py migrate
+- python manage.py sqlmigrate movies 0001
+- python manage.py createsuperuser
+- pipenv install tastypie
+- python manage.py startapp api
